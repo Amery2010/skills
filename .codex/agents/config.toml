@@ -1,0 +1,16 @@
+# The main agent uses the most powerful model to be responsible for planning, scheduling, integration, and final validation.
+model = "gpt-6-astra"
+
+[agents]
+# The current version defaults to true, but we explicitly declare it here for easier troubleshooting.
+enabled = true
+
+# It is recommended to start with 4-6 to avoid starting too many proxies at the same time.
+max_concurrent_threads_per_session = 6
+
+# Default sub-proxy model when no custom proxy is explicitly matched
+default_subagent_model = "gpt-5.6-luna"
+default_subagent_reasoning_effort = "max"
+
+# Context messages when a sub-agent is interrupted
+interrupt_message = true
