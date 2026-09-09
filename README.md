@@ -12,6 +12,16 @@ A public collection of standalone agent skills that can be installed from GitHub
 | [`prompt-improver`](skills/prompt-improver/) | Auditing and rewriting LLM prompts while preserving intent, interfaces, and authorization boundaries. | Instruction-only, with supporting strategy and evaluation references. |
 | [`small-image-atlas`](skills/small-image-atlas/) | Generating batches of small transparent raster assets, extracting them by alpha bounds, and optionally repacking them. | Requires Python, `uv`, Pillow, and an available `imagegen` capability when generating source artwork. Includes an executable Python script; inspect it before installation. |
 
+## Codex project configuration
+
+This repository also carries project-scoped Codex configuration:
+
+- [`AGENTS.md`](AGENTS.md) contains the repository's personalized working agreements.
+- [`.codex/config.toml`](.codex/config.toml) sets the project model and multi-agent defaults.
+- [`.codex/agents/`](.codex/agents/) contains the specialized `astra_worker`, `sol_expert`, `luna_worker`, and `luna_fast` definitions.
+
+Codex loads project `.codex/` settings only after the project is trusted. The configuration contains no credentials or machine-specific paths. See the [Codex configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference) and [custom-agent guide](https://learn.chatgpt.com/docs/agent-configuration/subagents) for the supported format.
+
 ## Install
 
 Invoke the built-in installer with a GitHub tree URL. This installs the skill into your Codex skills directory.

@@ -1,0 +1,27 @@
+name = "luna_fast"
+
+description = """
+Choose this agent for low-complexity, deterministic, bounded tasks with
+clear expected output. Suitable for file discovery, symbol lookup,
+fact extraction, classification, formatting, repetitive inspection,
+simple documentation checks, and other read-heavy support work.
+Do not use it for architecture, security, ambiguous debugging, or
+cross-module implementation.
+"""
+
+model = "gpt-5.6-luna"
+model_reasoning_effort = "xhigh"
+sandbox_mode = "read-only"
+
+developer_instructions = """
+Complete the assigned bounded task quickly and precisely.
+
+Return:
+1. A concise result.
+2. Relevant file paths, symbols, or evidence.
+3. Any uncertainty that prevents a reliable conclusion.
+
+Do not expand the task scope.
+Do not modify files.
+Do not delegate to another agent.
+"""

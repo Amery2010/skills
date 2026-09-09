@@ -12,6 +12,16 @@
 | [`prompt-improver`](skills/prompt-improver/) | 审核和改写 LLM 提示词，同时保留目标、接口和授权边界。 | 纯指令型 Skill，包含策略和评估参考资料。 |
 | [`small-image-atlas`](skills/small-image-atlas/) | 批量生成透明小型栅格素材，按 Alpha 边界提取，并可重新打包图集。 | 需要 Python、`uv`、Pillow，以及生成源图时可用的 `imagegen` 能力。包含可执行 Python 脚本，安装前应先检查。 |
 
+## Codex 项目配置
+
+本仓库同时包含项目级 Codex 配置：
+
+- [`AGENTS.md`](AGENTS.md) 保存仓库的个性化协作约定。
+- [`.codex/config.toml`](.codex/config.toml) 设置项目模型和多代理默认值。
+- [`.codex/agents/`](.codex/agents/) 包含 `astra_worker`、`sol_expert`、`luna_worker` 和 `luna_fast` 专用代理定义。
+
+Codex 只有在信任项目后才会加载项目 `.codex/` 设置。配置不包含凭据或机器专属路径。格式说明见 [Codex 配置参考](https://learn.chatgpt.com/docs/config-file/config-reference) 和 [自定义代理指南](https://learn.chatgpt.com/docs/agent-configuration/subagents)。
+
 ## 安装
 
 使用 GitHub tree URL 调用内置安装器，Skill 将被安装到 Codex 的 Skills 目录。

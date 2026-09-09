@@ -1,0 +1,16 @@
+# 主代理使用最强模型负责规划、调度、整合和最终验证
+model = "gpt-6-astra"
+
+[agents]
+# 当前版本默认就是 true，这里显式声明便于排查
+enabled = true
+
+# 建议从 4～6 开始，避免同时启动过多代理
+max_concurrent_threads_per_session = 6
+
+# 未明确匹配自定义代理时的默认子代理模型
+default_subagent_model = "gpt-5.6-luna"
+default_subagent_reasoning_effort = "max"
+
+# 保留子代理被中断时的上下文消息
+interrupt_message = true

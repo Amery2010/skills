@@ -8,7 +8,7 @@ The repository uses semantic versioning for its public skill paths and workflows
 
 ### Changed
 
-- No changes yet.
+- Added project-scoped Codex instructions in `AGENTS.md` and custom-agent configuration under `.codex/`.
 
 ## [0.1.0] - Unreleased
 
