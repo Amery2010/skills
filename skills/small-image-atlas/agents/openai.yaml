@@ -1,0 +1,4 @@
+interface:
+  display_name: "Small Image Atlas"
+  short_description: "Batch small assets into transparent sprite atlases"
+  default_prompt: "Use $small-image-atlas to generate a batch of small transparent assets as a padded sprite atlas, then extract and optionally repack them."
