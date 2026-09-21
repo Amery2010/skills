@@ -1,4 +1,4 @@
 interface:
   display_name: "Frontend UI Aesthetics"
   short_description: "Craft distinctive, immersive web interfaces"
-  default_prompt: "Use $frontend-ui-aesthetics to design and implement a distinctive, immersive website interface with Lucide icons, no emoji, and verified responsive quality."
+  default_prompt: "Use $frontend-ui-aesthetics to improve this website with a coherent visual direction, preserve its product behavior, and report the responsive and interaction checks performed."

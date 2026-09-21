@@ -6,7 +6,7 @@ from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 CODEX_ROOT = REPOSITORY_ROOT / ".codex"
-AGENT_NAMES = ("astra_worker", "sol_expert", "luna_worker", "luna_fast")
+AGENT_NAMES = ("astra_worker", "sol_expert", "luna_fast")
 
 
 def load_toml(path: Path) -> dict[str, object]:
@@ -14,17 +14,8 @@ def load_toml(path: Path) -> dict[str, object]:
         return tomllib.load(stream)
 
 
-def test_project_codex_configuration_has_expected_defaults() -> None:
-    config = load_toml(CODEX_ROOT / "config.toml")
-
-    assert config["model"] == "gpt-6-astra"
-    assert config["agents"] == {
-        "enabled": True,
-        "max_concurrent_threads_per_session": 6,
-        "default_subagent_model": "gpt-5.6-luna",
-        "default_subagent_reasoning_effort": "max",
-        "interrupt_message": True,
-    }
+def test_removed_project_agent_configuration_is_absent() -> None:
+    assert not (CODEX_ROOT / "agents" / "config.toml").exists()
 
 
 def test_custom_agents_have_required_fields_and_matching_names() -> None:

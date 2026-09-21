@@ -5,26 +5,22 @@
 
 ## Multi-agent orchestration
 
-The primary agent owns planning, delegation, integration, final validation, and the final response.
+The primary agent owns planning, delegation, integration, final validation, and the final response. Handle routine implementation directly; delegate only when delegation materially improves quality, speed, or context management.
 
-Delegate only when it materially improves quality, speed, or context management. Handle trivial one-file edits and straightforward questions directly; avoid delegation when coordination costs outweigh the benefits.
+Assign independent, bounded subtasks with explicit file ownership and acceptance criteria. Choose the least expensive available agent that can reliably complete each subtask:
 
-Assign independent, bounded subtasks with clear scope, file ownership, and acceptance criteria. Use the least expensive available agent that can reliably complete each subtask:
+- `luna_fast`: deterministic, bounded, read-only support such as lookup, extraction, classification, formatting, and repetitive inspection.
+- `sol_expert`: high-complexity, high-risk, or ambiguous analysis covering architecture, security, concurrency, migrations, performance, and other large-blast-radius decisions. Return evidence, tradeoffs, and an actionable implementation plan.
+- `astra_worker`: exceptionally difficult implementation using `gpt-6-astra`, including tightly coupled behavior, complex algorithms, subtle correctness guarantees, and difficult security, concurrency, or migration logic.
 
-- `luna_fast`: deterministic, read-only, low-risk work such as lookup, extraction, classification, and repetitive inspection.
-- `luna_worker`: routine implementation, debugging, tests, localized refactoring, and integrations with clear acceptance criteria and limited impact.
-- `sol_expert`: read-only analysis, architecture, diagnosis, and review for ambiguous or high-risk problems involving security, authorization, concurrency, migrations, performance, or cross-module behavior. Return evidence, tradeoffs, and an actionable implementation plan.
-- `astra_worker`: exceptionally difficult implementation using `gpt-6-astra`. Use for changes requiring tightly coordinated behavior across modules, subtle correctness guarantees, complex algorithms, or difficult security, concurrency, and migration logic.
+Route by the actual difficulty of the subtask, not its topic alone. A sensitive topic does not automatically require `astra_worker`.
 
-Route by the difficulty of the actual subtask, not its topic alone. Routine changes in a sensitive area do not automatically require Astra.
+### Routing and handoff
 
-### Escalation and handoff
-
-- Move from `luna_fast` to `luna_worker` when implementation or routine engineering judgment is needed.
+- Use `luna_fast` for bounded fact-finding and read-heavy support; keep the implementation with the primary agent unless a harder implementation handoff is justified.
 - Use `sol_expert` when diagnosis, design, or risk analysis is the main challenge.
-- Use `astra_worker` when implementation exceeds `luna_worker`'s reliable scope. Route directly when the difficulty is already clear; a prior failed attempt is not required.
-- When Sol's analysis is needed first, pass its evidence, proposed approach, constraints, and acceptance criteria to the implementation agent.
-- Do not require a Sol-to-Astra sequence for every difficult task.
+- Use `astra_worker` directly when the implementation difficulty is already clear; do not manufacture an analysis handoff first.
+- When analysis informs an implementation handoff, pass concrete evidence, constraints, and acceptance criteria to the implementation agent.
 - Return conflicting conclusions, scope changes, and unresolved tradeoffs to the primary agent.
 
 ### Parallelism

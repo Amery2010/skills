@@ -1,139 +1,54 @@
 ---
 name: frontend-ui-aesthetics
-description: Design and implement visually ambitious, production-ready marketing, portfolio, editorial, campaign, and immersive websites with strong art direction, experimental typography, refined motion, and premium interaction quality. Use when the user requests an Awwwards-level frontend, a cinematic or unconventional website, an immersive landing page, a creative portfolio, or a high-impact visual redesign. Do not use for routine dashboards or utility interfaces unless the user explicitly requests an experimental treatment.
+description: Design and implement art-directed, visually ambitious websites with expressive typography and purposeful motion. Use for cinematic landing pages, creative portfolios, editorial or campaign sites, immersive experiences, and high-impact visual redesigns. Use for dashboards or utility interfaces only when the user explicitly requests an experimental treatment.
 ---
 
 # Frontend UI Aesthetics
 
-## Objective
-
-Create a cohesive digital experience that treats the browser as an interactive, art-directed canvas.
-
-Aim for the craft and originality associated with standout Awwwards, FWA, and CSS Design Awards projects. Treat these references as a quality benchmark, never as a guarantee of recognition. Preserve usability, accessibility, performance, and the website's core purpose.
+Create a recognizable visual concept that serves the site's audience and primary action. Treat standout Awwwards, FWA, and CSS Design Awards work as a craft benchmark, not a promise of recognition. Match the intervention to the request: a section-level improvement does not require a site-wide redesign.
 
 ## Establish the Direction
 
-Before implementation:
+Inspect the existing framework, routes, components, content, assets, and design conventions before choosing a direction. For a redesign, inspect the rendered experience when browser access is available and identify which behaviors and visual cues must survive.
 
-1. Inspect the existing project, content, assets, framework, and constraints.
-2. State any important assumptions that cannot be verified.
-3. Define the website's audience, purpose, desired emotion, and primary action.
-4. Write a one-sentence visual thesis that gives the experience a distinct point of view.
-5. Select three to five design principles that govern typography, composition, imagery, color, and motion.
-6. Define verifiable completion criteria for responsive behavior, interactions, accessibility, and runtime quality.
+State a compact brief: audience, purpose, primary action, one-sentence visual thesis, and the few design principles that distinguish this project. Infer these from the supplied material when possible; clarify only missing decisions that would change the implementation. Follow a supplied brand or reference direction rather than inventing a competing concept.
 
-Choose one strong creative concept and execute it consistently. Do not combine unrelated visual trends or effects.
+Define completion in observable terms: required routes and interactions still work, the main composition fits representative viewports, content remains readable, and motion has an accessible fallback. This brief guides implementation; it is not an approval checkpoint unless the user asks for one.
 
-## Non-Negotiable Rules
+## Preserve the Product Contract
 
-- Use Lucide for all functional interface icons.
-- Keep icon size, stroke weight, alignment, and interaction states consistent.
-- Never use emojis in visible interface copy, navigation, controls, decoration, bullets, placeholders, or status indicators.
-- Reserve custom SVG artwork for logos, brand marks, and bespoke illustrations that Lucide cannot represent.
-- Preserve the project's existing framework and conventions unless the request requires a change.
-- Touch only the code necessary to deliver the requested experience.
-- Keep every interaction functional. Do not create decorative controls, fake buttons, or unfinished states.
-- Do not invent remote asset URLs or present unavailable integrations as working.
-- Avoid generic template aesthetics and interchangeable AI-generated layouts.
+- Retain the project's framework, public URLs, data flows, form behavior, selectors used by consumers, and accessible names unless the requested change requires an update. Keep unrelated changes out of the diff.
+- Reuse the existing design system and components where they support the direction. Extend tokens deliberately instead of layering competing style systems.
+- Use Lucide for functional interface icons, with consistent size, stroke, alignment, and states. Keep brand marks and bespoke illustration as artwork. Scope icon replacement to the surfaces being changed; a local edit is not a reason to migrate every icon.
+- Keep visible interface copy and decoration free of emoji. Preserve user-authored content and externally supplied data rather than filtering or rewriting them to enforce this design preference.
+- Every control must have a real destination or behavior. Represent unavailable integrations honestly; use verified assets or explicit placeholders rather than fabricated URLs or invented product claims.
 
 ## Art Direction
 
-### Composition
+Choose one coherent concept and apply it through these decisions:
 
-- Use the viewport as a spatial composition rather than a stack of conventional content blocks.
-- Explore asymmetry, controlled overlap, cropped elements, layered depth, unexpected alignment, and deliberate negative space.
-- Break the grid only when doing so strengthens hierarchy or narrative.
-- Keep unconventional layouts understandable, navigable, and responsive.
-- Give every section a clear role in the visual and informational sequence.
+| Dimension | Decision to make | Check against |
+| --- | --- | --- |
+| Composition | Hierarchy, asymmetry, negative space, selective overlap, section rhythm | The primary action stays discoverable; every section has a distinct purpose |
+| Typography | Expressive display face, readable body face, deliberate scale and line breaks | Real content, long titles, target languages, available font assets, and small screens |
+| Color and material | Focused palette with semantic roles; texture or effects that support the concept | Text and control contrast, clear focus and error states |
+| Imagery | One consistent treatment for provided, licensed, or generated assets | Asset availability, visual coherence, loading cost, useful alternative text |
+| Motion | Timing, easing, and transitions tied to user intent | Immediate input feedback, reduced motion, touch input, and rendering fallback |
 
-### Typography
+Use unconventional composition where it improves hierarchy or narrative. Avoid interchangeable card grids, generic startup copy, and decorative effects with no role in the concept. Familiar layouts are appropriate when they serve the content; originality must come from deliberate decisions rather than arbitrary novelty.
 
-- Treat typography as a primary visual material.
-- Build a deliberate scale with expressive display type and highly readable body type.
-- Use contrast in scale, weight, width, rhythm, and alignment to create impact.
-- Apply experimental line breaks and kinetic type intentionally.
-- Preserve legibility across languages, screen sizes, and content lengths.
-- Avoid default-looking type systems and arbitrary oversized headings.
+For canvas, WebGL, video, parallax, or kinetic typography, keep essential content and actions available through semantic DOM or an equivalent usable fallback. Prefer transform and opacity for motion where practical. Preserve native scrolling and avoid effects that obstruct input. Respect `prefers-reduced-motion` with a calm, fully usable experience.
 
-### Color and Material
+## Implement and Verify
 
-- Use a focused palette with clear semantic and emotional intent.
-- Maintain sufficient text and control contrast.
-- Use gradients, glow, blur, glass effects, grain, and texture only when they belong to the concept.
-- Avoid decorative effects that compete with content or obscure interaction states.
+1. Establish or extend tokens for type, color, spacing, layers, and motion. Build semantic structure and the main responsive composition using real content.
+2. Implement the strongest visual moment first, then extend the same system through the requested surfaces. Add motion after layout and content are stable.
+3. Complete relevant hover, focus, active, loading, empty, error, and disabled states. Ensure keyboard and touch users can reach actions that appear on hover.
+4. Run relevant project checks within the task's permissions. Remove unused code, dependencies, and effects introduced by this work.
+5. Inspect the real page at representative mobile, tablet, and desktop sizes, plus content-driven breakpoints. Check navigation, forms, focus order, reduced motion, long content, overflow, clipping, layout shifts, and obstruction by sticky or layered elements.
 
-### Imagery and Rendering
-
-- Combine photography, illustration, procedural graphics, video, canvas, WebGL, or generated assets only when they support one coherent art direction.
-- Prefer high-quality, correctly licensed, provided, or generated assets.
-- Optimize images, textures, video, and 3D resources for web delivery.
-- Provide meaningful fallbacks when advanced rendering is unavailable.
-- Never use visual complexity merely to demonstrate technical capability.
-
-## Interaction and Motion
-
-- Design motion as a system with consistent timing, easing, momentum, and hierarchy.
-- Use physical qualities such as inertia, spring, friction, parallax, or magnetic response when they reinforce the concept.
-- Connect transitions to user intent and spatial relationships.
-- Prioritize transform and opacity animations where practical.
-- Keep input feedback immediate and animation smooth.
-- Avoid excessive cursor effects, perpetual motion, scroll-jacking, and ornamental animation.
-- Respect `prefers-reduced-motion` and provide a calm equivalent experience.
-- Ensure essential content and actions remain available without animation or advanced rendering.
-
-## Avoid Generic Design Patterns
-
-Do not default to:
-
-- A centered headline over gradient blobs
-- Repetitive rounded cards
-- Arbitrary glassmorphism
-- Excessive pill-shaped controls
-- Random floating objects
-- Uniform section spacing without narrative rhythm
-- Decorative dashboards or metrics unrelated to the content
-- Generic startup copy
-- Effects copied from references without adapting them to the project
-
-Remove any element that lacks a clear visual, narrative, or functional purpose.
-
-## Implementation Workflow
-
-1. Audit the current experience and preserve all required behavior.
-2. Establish tokens for typography, color, spacing, layers, motion, and responsive behavior.
-3. Implement semantic structure and the main responsive composition.
-4. Build the strongest visual moment first to validate the art direction.
-5. Extend the same system across the remaining sections.
-6. Add motion progressively after layout and content are stable.
-7. Polish hover, focus, active, loading, empty, and error states.
-8. Remove unnecessary abstractions, dependencies, effects, and unused code introduced by the work.
-9. Run the project's relevant static checks and tests.
-10. Inspect the real page in a browser at representative mobile, tablet, and desktop sizes.
-
-## Quality Gate
-
-Do not consider the work complete until:
-
-- The page communicates a recognizable visual concept.
-- Every major design decision supports that concept.
-- Typography is expressive without compromising readability.
-- Lucide is used consistently for functional icons.
-- No emoji appears anywhere in the visible interface.
-- Navigation and interactive elements work with keyboard and pointer input.
-- Focus states are visible.
-- Semantic landmarks, labels, alternative text, and contrast are appropriate.
-- Reduced-motion behavior is implemented.
-- Mobile and desktop layouts both feel intentionally composed.
-- No unintended overflow, clipping, layout shift, or interaction obstruction remains.
-- Assets are optimized and advanced effects degrade gracefully.
-- The implemented result has been inspected in the browser rather than judged from source code alone.
-- Any remaining limitation is reported explicitly instead of being hidden.
+Use browser inspection when available and permitted. Do not interpret this workflow as permission to run E2E suites or install browser tooling. If browser access or another check is unavailable, finish feasible checks and identify the unverified behavior; source inspection alone does not establish visual quality. Stop preview services started for the task when finished.
 
 ## Handoff
 
-Summarize:
-
-- The visual thesis
-- The main implementation decisions
-- The checks and viewport sizes verified
-- Any remaining constraints or unavailable capabilities
+Report the visual thesis, the main changes, checks actually performed (including viewport sizes when inspected), and remaining limitations. Distinguish implemented fallbacks from fallbacks actually exercised. Keep the result proportional to the scope of the change.

@@ -1,59 +1,53 @@
 ---
 name: small-image-atlas
-description: Generate many small, independently usable raster assets as transparent PNG sprite atlases, extract them by alpha bounds, and optionally repack them with controlled gutters. Use for batches of icons, items, tokens, stickers, UI ornaments, or small 2D game assets; do not use for large standalone images, scenes, posters, covers, or hero art.
+description: Generate batches of small transparent raster assets, extract existing PNG atlases by alpha bounds, and optionally repack them with controlled gutters. Use for icons, items, tokens, stickers, UI ornaments, or independent small 2D game assets. Do not use for large scenes, hero art, or animation-frame alignment.
 ---
 
 # Small Image Atlas
 
-Produce batches of small raster assets through one or more transparent sprite atlases. Keep the atlas source, deterministic extractions, and an optional clean repack so downstream work can use either the individual PNGs or the sheet.
+Deliver independently usable PNG assets with a verifiable mapping from requested items to extracted files. Keep the source atlas, deterministic crops, and an optional repack. Independent crops do not establish consistent pivots or frame alignment for animation.
 
-## Scope
+## Choose the Workflow
 
-Use this workflow when the requested images are independently usable small assets that can remain legible while sharing a normal image-generation canvas. Treat scene-level composition, readable prose, photographic detail, or standalone display resolution as a large-image requirement and route that work outside this skill. For a mixed request, use this workflow only for its small-asset subset.
+- **New assets:** prepare an asset plan, generate a sheet, inspect it, then extract.
+- **Existing atlas:** inspect the supplied source and its item order, then extract without regenerating usable artwork.
+- **Repack:** extract only if needed and create a new sheet when the downstream consumer benefits from it.
 
-Prefer one atlas when the assets share a visual language. Split the request into a few coherent atlases when one sheet would make subjects too small, crowd the gutters, or mix incompatible styles. Preserve the user's requested asset count and grouping.
+Use this workflow for assets that remain legible while sharing a generation canvas. Handle large standalone artwork separately. Split a batch only when one sheet would crowd subjects or mix incompatible styles, preserving the requested count and grouping.
 
-## Workflow
+For generation or visual edits, use the available image-generation capability and follow its instructions; read the installed `imagegen` skill when available. If generation is unavailable, complete the plan or extract a usable supplied atlas and report the missing capability. Local extraction and repacking use the bundled script; they do not require a generation tool.
 
-1. Make an asset manifest before generation.
-   - Record the exact count, a short identifier for each asset, and the row-major order.
-   - Choose rows, columns, canvas size, approximate item size, outer margin, and gutter.
-   - Reserve transparent gutters of at least 16 px or one eighth of the intended item width, whichever is larger. Increase this for soft glows, particles, shadows, or irregular silhouettes.
-   - Keep identifiers in the manifest; do not render labels or numbers into the atlas.
+## Plan and Inspect
 
-2. Generate the atlas as one composite raster asset.
-   - Use the installed `imagegen` skill for the actual image-generation or edit call.
-   - Ask for exactly the manifest count in a strict row-major grid, with one centered subject per non-overlapping slot.
-   - Require a genuinely transparent background and preserved alpha, not a checkerboard, white field, or background-colored imitation.
-   - Require fully isolated silhouettes, generous empty gutters, consistent scale, viewpoint, lighting, palette, and rendering style.
-   - Keep every subject and its effects inside its slot. Exclude scenery, captions, borders, grid lines, watermarks, and shadows or effects that cross into another slot.
-   - Treat the atlas as the requested composite asset. Generate separate images only when an atlas attempt cannot preserve isolation or the user explicitly requests separate sources.
+Before generation or extraction, record an asset plan with stable identifiers, exact count, descriptions, row-major slot order, rows/columns when applicable, canvas size, and intended output scale. For a supplied atlas, use its observed layout and verify item identities against the user's supplied names. Record intentional empty slots. Keep identifiers in the plan, not painted into the image.
 
-3. Inspect before extracting.
-   - View the full-resolution PNG and compare every slot with the manifest.
-   - Check count, order, duplicates, omissions, clipping, style drift, and gutters.
-   - Confirm the file has an alpha channel; a visually plain background is not sufficient.
+Request one centered subject per equal-sized grid cell, consistent scale, viewpoint, lighting, palette, and rendering style. Require actual transparency, fully isolated silhouettes, and effects contained inside each cell. Exclude scenery, labels, grid lines, borders, and background imitations of transparency. As a starting point, reserve gutters of at least 16 px or one eighth of the intended item width, whichever is larger; increase them for soft effects and irregular silhouettes.
 
-4. Extract by transparent bounds.
-   - Run `scripts/extract_sprite_atlas.py` with `--expected-count` so a segmentation mismatch fails visibly.
-   - Start with `--mode auto` when full transparent row and column gutters clearly separate the sprites.
-   - Use `--mode grid --rows <R> --columns <C>` when a sprite contains disconnected internal pieces, soft effects, or holes that confuse automatic gutter detection. Grid mode still trims each slot to its alpha boundary.
-   - If the detected count is wrong, inspect the source and adjust `--bridge-gap` or `--alpha-threshold`, switch to grid mode, or regenerate with wider gutters. Do not silently merge, discard, or relabel unexpected regions.
+Inspect the full-resolution PNG against the plan before extraction: count, order, duplicates, omissions, clipping, consistency, and clear gutters. Check both that transparency is supported and that the expected background/gutters actually contain transparent pixels. An RGBA file can still have an opaque matte or painted checkerboard; the script does not detect those defects.
 
-5. Repack only when useful.
-   - Add `--repack <path.png>` to place the extracted sprites on a fresh transparent canvas with deterministic margins and gutters.
-   - Preserve row-major manifest order. Use individual extractions directly when a new sheet adds no downstream value.
+## Extract
 
-6. Verify the deliverables.
-   - The extracted count equals the manifest count.
-   - Every crop contains one complete intended asset and no pixels from a neighbor.
-   - Alpha is preserved; no opaque matte, checkerboard, label, or grid line remains.
-   - The optional repack has non-overlapping sprites and visibly transparent gutters.
-   - The manifest maps every output filename to its source bounding box and order.
+Use [scripts/extract_sprite_atlas.py](scripts/extract_sprite_atlas.py) with `--expected-count` and a fresh output directory. Choose segmentation from the source layout:
 
-## Commands
+| Source layout | Mode | Limitation |
+| --- | --- | --- |
+| Assets separated by clear horizontal bands and vertical gutters within each band | `auto` | Segments occupied bands, not semantic objects; disconnected pieces can split and narrow gutters can merge |
+| Known regular grid, especially with disconnected pieces or effects inside each cell | `grid` with rows and columns | Divides the entire canvas into equal cells; cannot infer custom offsets, unequal cells, or repair a subject crossing a cell edge |
 
-Automatic transparent-gutter extraction:
+Both modes trim detected candidates to their foreground bounds. Grid mode visits cells in row-major order but skips empty or undersized cells, so an output index is not necessarily the original slot number. Compare every crop with the plan even when the count matches.
+
+If segmentation fails, diagnose the source before retrying:
+
+- Adjust `--bridge-gap` only in auto mode; increasing it can join parts of one asset or accidentally merge neighbors.
+- `--alpha-threshold` counts only pixels with alpha strictly greater than the threshold for detection and crop bounds; it does not remove a matte or rewrite alpha values inside a crop. Lower it when faint effects are being clipped, then inspect the resulting gutters.
+- `--min-area` filters candidates by foreground-pixel count. For intentionally tiny assets, inspect whether filtering caused an omission rather than weakening the expected count.
+- Switch to grid only for an actual regular grid. For overlapping subjects or unusable transparency, repair/regenerate the source through the image tool when available and within scope.
+
+Keep the expected count tied to the user's request. Do not merge, discard, or relabel regions merely to make extraction pass. Repeat generation only after identifying a concrete correction; report unresolved defects if the available workflow cannot fix them.
+
+## Commands and Output Contract
+
+Automatic extraction:
 
 ```bash
 uv run --no-project --with pillow python \
@@ -61,7 +55,7 @@ uv run --no-project --with pillow python \
   atlas.png --out-dir extracted --mode auto --expected-count 12
 ```
 
-Grid-assisted extraction and optional repack:
+Grid extraction with optional repack:
 
 ```bash
 uv run --no-project --with pillow python \
@@ -70,8 +64,14 @@ uv run --no-project --with pillow python \
   --expected-count 12 --repack repacked.png --repack-gap 24
 ```
 
-The script refuses non-alpha inputs and existing output files unless `--force` is explicitly supplied. It writes `manifest.json` beside the extracted PNGs. Use `--trim-padding` to retain transparent breathing room around each tight alpha crop, and use `--bridge-gap` only in automatic mode to bridge short fully transparent gaps inside one sprite.
+Resolve `<skill-dir>` to the loaded skill directory. Inspect `--help` for additional options rather than guessing flags. The script accepts PNGs with alpha or transparency metadata, checks the expected count before writing, and refuses existing planned output paths unless `--force` is supplied. Use `--force` only for an intended replacement; it does not clean stale files from an earlier run. A failure during writing may leave partial outputs, so inspect them before retrying.
 
-## Handoff
+`--trim-padding` retains source pixels around the detected bounds, limited by each candidate's assigned region or grid cell; it does not guarantee a fixed transparent border. Repacking centers crops in uniform cells without scaling them. Choose repack columns, margins, and gaps for the consumer rather than assuming the source layout is retained.
 
-Report the source atlas, individual-output directory, manifest, optional repacked atlas, final generation prompt, extraction mode, expected versus extracted count, and any remaining visual uncertainty. Do not represent static inspection as in-engine or device validation.
+The generated `manifest.json` contains sequential indices, filenames, source crop boxes, sizes, selected extraction settings, and optional repack placements. Bounding boxes use `[left, top, right, bottom]` with exclusive right/bottom edges; source boxes include retained padding. The manifest omits some parameters, including source grid dimensions and `min-area`, so retain the actual extraction command for reproducibility. It does not assign semantic asset names or retain original grid-slot numbers. Complete the separate asset plan by mapping each identifier and source slot to the verified output filename and manifest index; keep the generated manifest schema intact.
+
+## Verify and Hand Off
+
+Confirm that every planned item has one correct output, every crop is complete and free of neighboring pixels, transparency and soft effects survive, and the optional repack has clear gutters. Count equality alone does not establish identity or visual quality.
+
+Provide links to the source, output directory, generated manifest, completed asset plan, and optional repack. Report the generation prompt when used, extraction command/settings, expected versus extracted count, and unresolved visual issues. Distinguish static asset inspection from in-engine or device validation.

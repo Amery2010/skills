@@ -4,11 +4,15 @@ All notable changes to this repository are documented in this file.
 
 The repository uses semantic versioning for its public skill paths and workflows.
 
-## [Unreleased]
+## [0.2.0]
 
 ### Changed
 
 - Added project-scoped Codex instructions in `AGENTS.md` and custom-agent configuration under `.codex/`.
+- Streamlined all three skills and aligned their invocation prompts with scoped workflows and evidence-based handoffs.
+- Added product-contract preservation and explicit browser-verification limits to `frontend-ui-aesthetics`.
+- Added post-rewrite contract checks, template integration guidance, and baseline evaluation reporting to `prompt-improver`.
+- Clarified existing-atlas workflows, segmentation limits, transparency checks, and asset-name mapping in `small-image-atlas` without changing the extraction script or manifest schema.
 
 ## [0.1.0] - Unreleased
 

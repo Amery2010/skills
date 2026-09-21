@@ -19,6 +19,8 @@ A compact rubric can score each dimension from 0 to 2:
 
 Weight dimensions according to the actual risk. A parser-facing prompt may weight output validity heavily; a research prompt may weight grounding and citation quality.
 
+Define hard failures separately from weighted scores: broken schemas, changed required literals, or unauthorized actions cannot be offset by better style or efficiency.
+
 ## Build a Small Representative Test Set
 
 Include only cases that exercise meaningful behavior:
@@ -36,6 +38,7 @@ Add domain-specific safety or permission cases when consequential actions are po
 ## Compare Fairly
 
 - Hold model, runtime configuration, tools, and test inputs constant when comparing prompt variants.
+- Preserve the original prompt as the baseline and run the same cases against both versions when execution is authorized. Record outputs and failures, not just the preferred revision.
 - Run enough repetitions to observe variance when sampling or model nondeterminism matters.
 - Use deterministic validators for schemas, calculations, links, and other machine-checkable properties.
 - Blind human or model-judge comparisons when subjective quality matters, and define the rubric before seeing results.
@@ -43,9 +46,11 @@ Add domain-specific safety or permission cases when consequential actions are po
 
 Self-critique by the same model is a drafting aid, not independent evidence. Use external facts, validators, a separate evaluation pass, or human review when independence matters.
 
+Report what was actually executed, the sample size, observed regressions, and checks still pending. Static contract checks and hypothetical walkthroughs are useful but do not establish a measured improvement. Do not run the task embedded in a prompt merely to evaluate the rewrite without the necessary authorization.
+
 ## Record the Prompt as a Versioned Artifact
 
-For reusable production prompts, record:
+Use the project's existing prompt or evaluation format. Record the following when relevant to reproducibility; do not introduce a separate registry just to satisfy this checklist:
 
 - prompt ID, version, owner, purpose, and last review date;
 - system and user layers separately;

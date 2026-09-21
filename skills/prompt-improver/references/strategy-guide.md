@@ -19,7 +19,7 @@ Do not stack techniques by default. A longer prompt is not inherently a better p
 
 ## Message Architecture
 
-Use the system layer for stable behavior that should apply across turns:
+Use the runtime's supported system/developer layer for stable behavior that should apply across turns:
 
 - role and scope when they materially guide decisions;
 - durable policies and authority boundaries;
@@ -40,6 +40,8 @@ Define semantic behavior as well as syntax:
 - whether prose outside the structure is allowed.
 
 Provider-native schema enforcement is stronger than prose such as “valid JSON.” When only prompting is available, include a compact literal schema or a representative example and require output without a conversational wrapper. Parsing and validation still belong in application code.
+
+Keep schema keys, enum values, and required literals identical to the consumer's contract. In code-backed templates, account for braces, escaping, and interpolation before adding JSON examples. Put API configuration suggestions outside the copy-ready prompt unless the user requests configuration changes.
 
 ## Long Context and Grounding
 
@@ -80,6 +82,8 @@ Sampling settings, response prefills, tool calling, and schema enforcement are r
 - Low temperature may reduce variation but does not guarantee determinism.
 - Response prefilling is valid only when the selected API supports it.
 - Use current native tool/schema mechanisms rather than reproducing legacy text protocols.
+
+Verify provider-specific recommendations against current official documentation when they affect the revision. If verification is unavailable, label the capability as unverified and keep the usable prompt independent of it.
 
 ## Common Overengineering Signals
 

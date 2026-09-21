@@ -1,4 +1,4 @@
 interface:
   display_name: "Prompt Improver"
   short_description: "Audit and rewrite LLM prompts for reliable results"
-  default_prompt: "Use $prompt-improver to audit and rewrite this LLM prompt while preserving its intent."
+  default_prompt: "Use $prompt-improver to audit and rewrite this prompt, preserving its intent, variables, output contract, and authorization boundaries."
